@@ -142,15 +142,18 @@ spl_autoload_register(function($class){
     require_once ($path);
 });
 
+require __DIR__ . '\\..\routes.php';
 
-switch($_SERVER['REQUEST_URI']){
-    case '/':
-        echo "home page";
-        break;
-    case '/posts':
-        echo "some posts";
-        break;
-    default:
-        echo "error 404";
-        break;
+$router = new Router($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+$match = $router->match();
+if(isset($match['action']) && is_callable($match['action'])){
+    call_user_func($match['action']);
+} elseif(isser($match['action']) && is_array($match['action'])) {
+    $class = $match['action'][0];
+    $method = $match['action'][1];
+
+    $onj = new $class();
+    $obj->$method();
+} else {
+    echo "4004";
 }
